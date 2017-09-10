@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="10 seconds" debug="false">
+    <property name="logback.logdir" value="logs/"/>
+    <property name="logback.appname" value="scu-notice"/>
+
+    <!--输出到控制台 ConsoleAppender-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--展示格式 layout-->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{HH.mm.ss} [%thread] %-5level %logger{0} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <!-- mybatis 相关 -->
+    <appender name="mybatisFileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <File>${logback.logdir}/mybatis.info.${logback.appname}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logback.logdir}/mybatis.info.${logback.appname}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <maxHistory>20</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- spring 相关 -->
+    <appender name="springFileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <File>${logback.logdir}/spring.info.${logback.appname}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logback.logdir}/spring.info.${logback.appname}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <maxHistory>20</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- scu-notice 相关 -->
+    <appender name="appFileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <File>${logback.logdir}/app.info.${logback.appname}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logback.logdir}/app.info.${logback.appname}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <maxHistory>20</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- error -->
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+        </filter>
+        <File>${logback.logdir}/error.${logback.appname}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logback.logdir}/error.${logback.appname}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <maxHistory>20</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{0} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="test,dev">
+        <logger name="net.hashcoding.code.scuinfo" level="INFO" addtivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="appFileInfoLog"/>
+        </logger>
+
+        <logger name="com.ibatis" level="INFO" addtivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="mybatisFileInfoLog"/>
+        </logger>
+
+        <logger name="org.springframework" level="INFO" addtivity="false">
+            <appender-ref ref="springFileInfoLog"/>
+        </logger>
+
+        <root level="INFO">
+            <appender-ref ref="console"/>
+            <appender-ref ref="appFileInfoLog"/>
+            <appender-ref ref="fileErrorLog"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="net.hashcoding.code.scuinfo" level="INFO" addtivity="false">
+            <appender-ref ref="appFileInfoLog"/>
+        </logger>
+
+        <logger name="com.ibatis" level="INFO" addtivity="false">
+            <appender-ref ref="mybatisFileInfoLog"/>
+        </logger>
+
+        <logger name="org.springframework" level="INFO" addtivity="false">
+            <appender-ref ref="springFileInfoLog"/>
+        </logger>
+
+        <root level="INFO">
+            <appender-ref ref="appFileInfoLog"/>
+            <appender-ref ref="fileErrorLog"/>
+        </root>
+    </springProfile>
+</configuration>
