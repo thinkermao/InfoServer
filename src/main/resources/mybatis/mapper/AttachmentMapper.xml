@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.hashcoding.code.scuinfo.domain.mapper.AttachmentMapper">
+    <resultMap id="BaseResultMap" type="Attachment">
+        <id column="attach_id" property="attachId"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="article_id" property="articleId" />
+    </resultMap>
+
+    <select id="selectByArticleId" resultMap="BaseResultMap">
+        SELECT attach_id, content as name, url, article_id
+        FROM attachment
+        WHERE article_id = #{article_id}
+        ORDER BY attach_id ASC
+    </select>
+
+    <insert id="insert">
+        INSERT INTO attachment (article_id, content, url)
+        VALUES
+        <foreach collection="attachments" item="attach" index="index" separator="," >
+            (#{attach.articleId}, #{attach.name}, #{attach.url})
+        </foreach>
+        ;
+    </insert>
+
+    <update id="update">
+        <foreach collection="attachments" item="attach" separator=";">
+            UPDATE attachment
+            SET content = #{attach.name},
+                url = #{attach.url},
+                article_id = #{attach.articleId}
+        </foreach>
+    </update>
+
+    <delete id="deleteById" >
+        DELETE FROM attachment
+        WHERE attach_id in
+        <foreach collection="ids" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

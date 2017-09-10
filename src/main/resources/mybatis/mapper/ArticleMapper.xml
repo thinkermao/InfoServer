@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.hashcoding.code.scuinfo.domain.mapper.ArticleMapper">
+    <resultMap id="BaseResultMap" type="Article">
+        <id column="article_id" property="articleId"/>
+        <result column="title" property="title"/>
+        <result column="url" property="originUrl"/>
+        <result column="thumb" property="thumb"/>
+        <result column="content" property="content"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        <association property="type" javaType="ArticleType"
+                     column="type_id" select="net.hashcoding.code.scuinfo.domain.mapper.ArticleTypeMapper.selectById"/>
+        <collection property="attachments" ofType="Attachment"
+                    column="article_id" select="net.hashcoding.code.scuinfo.domain.mapper.AttachmentMapper.selectByArticleId"/>
+    </resultMap>
+
+    <select id="selectByUrl" resultMap="BaseResultMap">
+        SELECT article_id, title, url, thumb, content, created_at, updated_at, type_id
+        FROM article
+        WHERE url = #{url}
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT article_id, title, url, thumb, content, created_at, updated_at, type_id
+        FROM article
+        WHERE article_id = #{articleId}
+    </select>
+
+    <select id="listByTypes" resultMap="BaseResultMap">
+        SELECT article_id, title, url, thumb, content, created_at, type_id, updated_at
+        FROM article
+        WHERE type_id in
+        <foreach collection="types" item="type" open="(" close=")" separator=",">
+            #{type.typeId}
+        </foreach>
+        ORDER BY created_at DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="articleId" parameterType="Article">
+        INSERT INTO article (
+            title, url, content,
+            <if test="thumb != null">thumb,</if>
+            <if test="createdAt != null">created_at,</if>
+            type_id)
+        VALUES (
+            #{title},
+            #{originUrl},
+            #{content},
+            <if test="thumb != null">#{thumb},</if>
+            <if test="createdAt != null">#{createdAt, jdbcType=TIMESTAMP},</if>
+            #{type.typeId})
+    </insert>
+
+    <update id="update" parameterType="Article">
+        UPDATE article
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="thumb != null">thumb = #{thumb},</if>
+            <if test="type != null">type_id = #{type.typeId},</if>
+        </trim>
+        WHERE article_id = #{articleId}
+    </update>
+
+    <delete id="deleteById" >
+        DELETE FROM article
+        WHERE article_id = #{articleId}
+    </delete>
+</mapper>

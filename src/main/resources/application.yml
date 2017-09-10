@@ -1,0 +1,28 @@
+
+# mybatis.type-aliases-package=net.hashcoding.code.scuinfo.domain.entity
+
+spring:
+    profiles:
+        active: dev
+
+    datasource:
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/article?characterEncoding=utf8&useSSL=true
+        username: root
+        password: maochuan..
+
+    # HTTP ENCODING
+    http:
+        encoding.charset: UTF-8
+        encoding.enable: true
+        encoding.force: true
+
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss.SSS Z
+        locale: zh
+        time-zone: GMT+8
+
+mybatis:
+    typeAliasesPackage: net.hashcoding.code.scuinfo.domain.entity
+    config-locations: classpath:mybatis/mybatis-config.xml
+    mapper-locations: classpath:mybatis/mapper/*.xml

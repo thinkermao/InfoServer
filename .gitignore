@@ -1,0 +1,14 @@
+.gradle/
+.idea/
+logs/
+build/
+gradle/
+
+gradlew
+gradlew.bat
+deploy.sh
+
+application-production.yml
+scu-notice
+redeploy.sh
+

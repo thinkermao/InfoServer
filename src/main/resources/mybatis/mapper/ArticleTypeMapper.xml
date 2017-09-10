@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.hashcoding.code.scuinfo.domain.mapper.ArticleTypeMapper">
+    <resultMap id="BaseResultMap" type="ArticleType">
+        <id column="type_id" property="typeId"/>
+        <result column="name" property="name"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT type_id, name
+        FROM article_type
+        WHERE type_id = #{typeId}
+    </select>
+
+    <select id="selectByName" resultMap="BaseResultMap">
+        SELECT type_id,name
+        FROM article_type
+        WHERE name = #{name}
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        SELECT type_id, name
+        FROM article_type
+        ORDER BY type_id ASC
+    </select>
+
+    <select id="listByName" resultMap="BaseResultMap" parameterType="java.util.List">
+        SELECT type_id, name
+        FROM article_type
+        WHERE name in
+        <foreach collection="names" item="name" index="index"
+                 open="(" close=")" separator=",">
+            #{name}
+        </foreach>
+    </select>
+
+    <insert id="insert" parameterType="ArticleType">
+        INSERT INTO article_type(name)
+        VALUES (#{name})
+    </insert>
+</mapper>
